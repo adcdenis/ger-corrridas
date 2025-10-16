@@ -34,7 +34,7 @@ app.use(limiter);
 // CORS
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://seu-dominio-frontend.vercel.app'] 
+    ? process.env.FRONTEND_URL || true
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 }));
@@ -89,12 +89,14 @@ const startServer = async () => {
     // Conectar ao banco de dados
     await connectDatabase();
     
-    // Iniciar servidor
-    app.listen(PORT, () => {
-      console.log(`🚀 Servidor rodando na porta ${PORT}`);
-      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-    });
+    // Iniciar servidor apenas se não estiver no Vercel
+    if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+      app.listen(PORT, () => {
+        console.log(`🚀 Servidor rodando na porta ${PORT}`);
+        console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+      });
+    }
   } catch (error) {
     console.error('Erro ao iniciar servidor:', error);
     process.exit(1);
@@ -112,7 +114,14 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Iniciar servidor
-startServer();
+// Iniciar servidor apenas se não estiver no Vercel
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  startServer();
+} else {
+  // No Vercel, apenas conectar ao banco
+  connectDatabase().catch(error => {
+    console.error('Erro ao conectar ao banco:', error);
+  });
+}
 
 export default app;
