@@ -39,10 +39,10 @@ Sistema completo para gerenciamento de corridas com React + Node.js + MongoDB.
 1. **Crie um novo projeto** no Vercel
 2. **Importe o mesmo repositório**
 3. **Configure o projeto:**
-   - **Framework Preset:** Vite
-   - **Root Directory:** `frontend`
+   - **Framework Preset:** Other
+   - **Root Directory:** `.` (raiz do projeto)
    - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
+   - **Output Directory:** `frontend/dist`
    - **Install Command:** `npm install`
 
 4. **Configure as variáveis de ambiente:**
