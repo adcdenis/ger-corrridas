@@ -41,7 +41,7 @@ Sistema completo para gerenciamento de corridas com React + Node.js + MongoDB.
 3. **Configure o projeto:**
    - **Framework Preset:** Vite
    - **Root Directory:** `frontend`
-   - **Build Command:** `vite build`
+   - **Build Command:** `npm run build`
    - **Output Directory:** `dist`
    - **Install Command:** `npm install`
 
