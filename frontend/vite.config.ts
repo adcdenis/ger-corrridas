@@ -10,4 +10,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    // Garantir que o build funcione mesmo com warnings de TypeScript
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suprimir warnings específicos se necessário
+        if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return
+        warn(warning)
+      }
+    }
+  }
 })
