@@ -4,7 +4,7 @@ import { User } from '../../src/models/User';
 import { generateToken } from '../../src/utils/jwt';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Configurar CORS
+  // Configurar CORS para todas as requisições
   res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -12,17 +12,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   // Apenas aceitar método POST
   if (req.method !== 'POST') {
-    res.status(405).json({
+    return res.status(405).json({
       success: false,
       message: 'Método não permitido'
     });
-    return;
   }
 
   try {
