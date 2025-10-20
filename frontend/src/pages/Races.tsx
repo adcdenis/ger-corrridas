@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useSearchParams } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { type Race, STATUS_LABELS, STATUS_COLORS } from '../types/index';
@@ -29,6 +30,7 @@ const raceSchema = z.object({
 type RaceFormData = z.infer<typeof raceSchema>;
 
 export const Races: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -60,7 +62,15 @@ export const Races: React.FC = () => {
 
   useEffect(() => {
     fetchRaces();
-  }, []);
+    
+    // Verificar se deve abrir o formulário automaticamente
+    const shouldOpenForm = searchParams.get('new') === 'true';
+    if (shouldOpenForm) {
+      setShowForm(true);
+      // Remover o parâmetro da URL após abrir o formulário
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   const onSubmit = async (data: RaceFormData) => {
     try {

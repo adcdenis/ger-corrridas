@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Activity, 
   Users, 
@@ -12,7 +13,8 @@ import {
   Medal,
   Target,
   ExternalLink,
-  X
+  X,
+  Plus
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import type { Race, RaceStats } from '../types/index';
@@ -211,6 +213,7 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
 };
 
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [races, setRaces] = useState<Race[]>([]);
   const [stats, setStats] = useState<RaceStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -379,16 +382,13 @@ export const Dashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+          <button 
+            onClick={() => navigate('/races?new=true')}
+            className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
+          >
             <div className="text-center">
-              <Activity className="w-6 sm:w-8 h-6 sm:h-8 text-gray-400 mx-auto mb-2" />
+              <Plus className="w-6 sm:w-8 h-6 sm:h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-600">Nova Corrida</p>
-            </div>
-          </button>
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
-            <div className="text-center">
-              <Users className="w-6 sm:w-8 h-6 sm:h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600">Gerenciar Participantes</p>
             </div>
           </button>
           <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors sm:col-span-2 lg:col-span-1">

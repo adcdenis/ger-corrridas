@@ -10,6 +10,7 @@ import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Races } from './pages/Races';
 import { Statistics } from './pages/Statistics';
+import { MindMap } from './pages/MindMap';
 
 // Criar cliente do React Query
 const queryClient = new QueryClient({
@@ -76,7 +77,7 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Layout>
-                      <ComingSoon title="Mapa Mental" />
+                      <MindMap />
                     </Layout>
                   </ProtectedRoute>
                 }
