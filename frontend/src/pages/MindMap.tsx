@@ -7,7 +7,9 @@ import {
   ChevronRight,
   Activity,
   Minus,
-  Plus
+  Plus,
+  Trophy,
+  Target
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import type { Race } from '../types/index';
@@ -236,35 +238,32 @@ export const MindMap: React.FC = () => {
                       {monthData.isExpanded && monthData.races.length > 0 && (
                         <div className="mt-4 space-y-3">
                           {monthData.races.map((race) => (
-                            <div
-                              key={race._id}
-                              className="bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300 hover:bg-gray-100 transition-colors duration-200"
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <h4 className="font-medium text-gray-900 mb-1">
-                                    {race.name}
-                                  </h4>
-                                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                                     <span className="flex items-center gap-1">
-                                       <Calendar className="w-4 h-4" />
-                                       {formatDate(race.date)}
-                                     </span>
-                                     <span className="flex items-center gap-1">
-                                       <Clock className="w-4 h-4" />
-                                       {race.distancia}km
-                                     </span>                                    
-                                     {race.time && (
-                                       <span className="text-sm font-medium text-gray-700">
-                                         {race.time}
-                                       </span>
-                                     )}
-                                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(race.status)}`}>
-                                       {getStatusText(race.status)}
-                                     </span>
-                                   </div>
-                                </div>
+                            <div key={race._id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                              <div className="flex items-start justify-between mb-3">
+                                <h4 className="font-medium text-gray-900 text-sm flex-1 pr-2">{race.name}</h4>
+                                <span className={`inline-flex ${getStatusColor(race.status)} flex-shrink-0`}>
+                                  {getStatusText(race.status)}
+                                </span>
                               </div>
+                              
+                              <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                                <div className="flex items-center">
+                                  <Calendar className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+                                  <span className="truncate">{formatDate(race.date)}</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <Clock className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+                                  <span className="truncate">{race.time}</span>
+                                </div>
+                                <div className="flex items-center">
+                                   <Target className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+                                   <span className="truncate">{race.distancia} km</span>
+                                 </div>
+                                 <div className="flex items-center">
+                                   <Trophy className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+                                   <span className="truncate">{formatPrice(race.price)}</span>
+                                 </div>
+                              </div>                             
                             </div>
                           ))}
                         </div>
