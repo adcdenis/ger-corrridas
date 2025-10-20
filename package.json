@@ -1,6 +1,6 @@
 {
   "name": "gerenciador-corridas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sistema de gerenciamento de corridas com React + Vite + MongoDB",
    "scripts": {
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
