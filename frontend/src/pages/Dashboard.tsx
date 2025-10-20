@@ -30,22 +30,31 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, trend, trendUp }) => (
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-    <div className="flex items-center justify-between">
-      <div className="min-w-0 flex-1">
-        <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">{title}</p>
-        <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 sm:mt-2">{value}</p>
-        {trend && (
-          <p className={`text-xs sm:text-sm mt-1 sm:mt-2 flex items-center ${
+    <div className="flex flex-col h-full">
+      {/* Título no topo */}
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs sm:text-sm font-medium text-gray-600">{title}</p>
+        <div className="p-2 sm:p-3 bg-blue-50 rounded-full flex-shrink-0 text-blue-600">
+          {icon}
+        </div>
+      </div>
+      
+      {/* Valor principal */}
+      <div className="flex-1 flex items-center">
+        <p className="text-xl sm:text-2xl font-bold text-gray-900">{value}</p>
+      </div>
+      
+      {/* Trend (se existir) */}
+      {trend && (
+        <div className="mt-2">
+          <p className={`text-xs sm:text-sm flex items-center ${
             trendUp ? 'text-green-600' : 'text-red-600'
           }`}>
             <TrendingUp className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 ${!trendUp ? 'rotate-180' : ''}`} />
             {trend}
           </p>
-        )}
-      </div>
-      <div className="p-2 sm:p-3 bg-blue-50 rounded-full flex-shrink-0 ml-3 text-blue-600">
-        {icon}
-      </div>
+        </div>
+      )}
     </div>
   </div>
 );
@@ -65,7 +74,10 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('pt-BR');
+    // Evitar problemas de fuso horário interpretando a data como local
+    const [year, month, day] = dateStr.split('-');
+    const localDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    return localDate.toLocaleDateString('pt-BR');
   };
 
   const formatPrice = (price: number) => {
@@ -226,12 +238,13 @@ export const Dashboard: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // Buscar corridas recentes (últimas 5) filtradas por ano
+        // Buscar corridas recentes (últimas 5 concluídas) filtradas por ano
         const racesResponse = await apiService.getRaces({ 
           limit: 5, 
-          sortBy: 'createdAt', 
+          sortBy: 'date', 
           sortOrder: 'desc',
-          year: selectedYear
+          year: selectedYear,
+          status: ['concluido']
         });
 
         // Buscar estatísticas filtradas por ano
@@ -320,12 +333,14 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center text-xs sm:text-sm text-gray-500">
             <Calendar className="w-4 h-4 mr-1 flex-shrink-0" />
             <span className="hidden sm:inline">
-              {new Date().toLocaleDateString('pt-BR', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
+              {(() => {
+                const today = new Date();
+                const weekday = today.toLocaleDateString('pt-BR', { weekday: 'long' });
+                const day = today.getDate().toString().padStart(2, '0');
+                const month = (today.getMonth() + 1).toString().padStart(2, '0');
+                const year = today.getFullYear();
+                return `${weekday}, ${day}/${month}/${year}`;
+              })()}
             </span>
             <span className="sm:hidden">
               {new Date().toLocaleDateString('pt-BR')}
@@ -337,32 +352,32 @@ export const Dashboard: React.FC = () => {
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
         <StatCard
-          title={`Total (${selectedYear})`}
+          title="Total"
           value={dashboardStats.total.toString()}
           icon={<Activity className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
         <StatCard
-          title={`Inscritas (${selectedYear})`}
+          title="Inscritas"
           value={dashboardStats.inscrito.toString()}
           icon={<Users className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
         <StatCard
-          title={`Concluídas (${selectedYear})`}
+          title="Concluídas"
           value={dashboardStats.concluido.toString()}
           icon={<Trophy className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
         <StatCard
-          title={`Pretendo Ir (${selectedYear})`}
+          title="Pretendo Ir"
           value={dashboardStats.pretendoIr.toString()}
           icon={<Target className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
         <StatCard
-          title={`Canceladas (${selectedYear})`}
+          title="Canceladas"
           value={dashboardStats.cancelada.toString()}
           icon={<X className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
         <StatCard
-          title={`Não Pude Ir (${selectedYear})`}
+          title="Não Pude Ir"
           value={dashboardStats.naoPudeIr.toString()}
           icon={<Clock className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
@@ -372,7 +387,7 @@ export const Dashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-            Corridas Recentes ({selectedYear})
+            Últimas Corridas Concluídas
           </h3>
         </div>
         <RecentRacesTable races={races} />

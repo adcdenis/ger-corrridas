@@ -45,9 +45,14 @@ export const Races: React.FC = () => {
   });
 
   const fetchRaces = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await apiService.getRaces();
+      // Buscar todas as corridas sem limitação de paginação
+      const response = await apiService.getRaces({
+        limit: 1000, // Limite alto para buscar todas as corridas
+        sortBy: 'date',
+        sortOrder: 'desc'
+      });
       setRaces(response.data?.races || []);
     } catch (error) {
       toast.error('Erro ao carregar corridas');
@@ -359,34 +364,34 @@ export const Races: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Desktop Table */}
           <div className="hidden lg:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 table-fixed">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-1/5 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Nome
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Data
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-16 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Horário
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Distância
+                  <th className="w-16 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Dist.
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Preço
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tempo
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Inscrição
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="w-20 px-2 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Ações
                   </th>
                 </tr>
@@ -394,65 +399,71 @@ export const Races: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {races.map((race) => (
                    <tr key={race._id} className="hover:bg-gray-50">
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <div className="text-sm font-medium text-gray-900">{race.name}</div>
+                     <td className="px-3 py-3 truncate">
+                       <div className="text-sm font-medium text-gray-900 truncate" title={race.name}>{race.name}</div>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <div className="text-sm text-gray-900">
-                         {new Date(race.date).toLocaleDateString('pt-BR')}
+                     <td className="px-2 py-3 whitespace-nowrap">
+                       <div className="text-xs text-gray-900">
+                         {(() => {
+                           // Evitar problemas de fuso horário interpretando a data como local
+                           const [year, month, day] = race.date.split('-');
+                           const localDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                           return localDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                         })()}
                        </div>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <div className="text-sm text-gray-900">{race.time}</div>
+                     <td className="px-2 py-3 whitespace-nowrap">
+                       <div className="text-xs text-gray-900">{race.time}</div>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <div className="text-sm text-gray-900">{race.distancia} km</div>
+                     <td className="px-2 py-3 whitespace-nowrap">
+                       <div className="text-xs text-gray-900">{race.distancia}km</div>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <div className="text-sm text-gray-900">
-                         R$ {race.price.toFixed(2).replace('.', ',')}
+                     <td className="px-2 py-3 whitespace-nowrap">
+                       <div className="text-xs text-gray-900">
+                         R$ {race.price.toFixed(0)}
                        </div>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${STATUS_COLORS[race.status]}`}>
+                     <td className="px-2 py-3 whitespace-nowrap">
+                       <span className={`inline-flex px-1.5 py-0.5 text-xs font-semibold rounded-full ${STATUS_COLORS[race.status]}`}>
                          {STATUS_LABELS[race.status]}
                        </span>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
-                       <div className="text-sm text-gray-900">
+                     <td className="px-2 py-3 whitespace-nowrap">
+                       <div className="text-xs text-gray-900">
                          {race.tempoConlusao || '-'}
                        </div>
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap">
+                     <td className="px-2 py-3 whitespace-nowrap">
                        {race.urlInscricao ? (
                          <a
                            href={race.urlInscricao}
                            target="_blank"
                            rel="noopener noreferrer"
                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                           title="Inscrever-se"
                          >
-                           <ExternalLink size={16} />
-                           Inscrever-se
+                           <ExternalLink size={12} />
+                           <span className="text-xs">Link</span>
                          </a>
                        ) : (
-                         <span className="text-gray-400 text-sm">Não informado</span>
+                         <span className="text-gray-400 text-xs">-</span>
                        )}
                      </td>
-                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                       <div className="flex justify-end gap-2">
+                     <td className="px-2 py-3 whitespace-nowrap text-right text-sm font-medium">
+                       <div className="flex justify-end gap-1">
                          <button
                            onClick={() => handleEdit(race)}
                            className="text-blue-600 hover:text-blue-800 p-1"
                            title="Editar"
                          >
-                           <Pencil size={16} />
+                           <Pencil size={14} />
                          </button>
                          <button
                            onClick={() => setDeleteConfirm(race._id)}
                            className="text-red-600 hover:text-red-800 p-1"
                            title="Excluir"
                          >
-                           <Trash2 size={16} />
+                           <Trash2 size={14} />
                          </button>
                        </div>
                      </td>
@@ -489,7 +500,14 @@ export const Races: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3 text-sm mb-3">
                   <div>
                     <span className="text-gray-500">Data:</span>
-                    <div className="font-medium">{new Date(race.date).toLocaleDateString('pt-BR')}</div>
+                    <div className="font-medium">
+                      {(() => {
+                        // Evitar problemas de fuso horário interpretando a data como local
+                        const [year, month, day] = race.date.split('-');
+                        const localDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                        return localDate.toLocaleDateString('pt-BR');
+                      })()}
+                    </div>
                   </div>
                   <div>
                     <span className="text-gray-500">Horário:</span>

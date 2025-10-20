@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
-  MapPin, 
   Clock, 
   ExternalLink,
   ChevronDown,
@@ -42,7 +41,8 @@ export const MindMap: React.FC = () => {
         const response = await apiService.getRaces({ 
           year: selectedYear,
           sortBy: 'date',
-          sortOrder: 'asc'
+          sortOrder: 'asc',
+          limit: 1000 // Buscar todas as corridas do ano
         });
 
         if (response.success && response.data) {
@@ -71,10 +71,12 @@ export const MindMap: React.FC = () => {
 
     // Organizar corridas por mês
     racesList.forEach(race => {
-      const raceDate = new Date(race.date);
-      const month = raceDate.getMonth();
-      const existingRaces = monthsMap.get(month) || [];
-      monthsMap.set(month, [...existingRaces, race]);
+      // Evitar problemas de fuso horário interpretando a data como local
+      const [year, month, day] = race.date.split('-');
+      const localDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      const monthIndex = localDate.getMonth();
+      const existingRaces = monthsMap.get(monthIndex) || [];
+      monthsMap.set(monthIndex, [...existingRaces, race]);
     });
 
     // Criar array de dados dos meses
@@ -107,7 +109,10 @@ export const MindMap: React.FC = () => {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('pt-BR');
+    // Evitar problemas de fuso horário interpretando a data como local
+    const [year, month, day] = dateStr.split('-');
+    const localDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    return localDate.toLocaleDateString('pt-BR');
   };
 
   const formatPrice = (price: number) => {
@@ -193,102 +198,75 @@ export const MindMap: React.FC = () => {
                 <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-1 bg-gray-400"></div>
                 
                 <div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 pt-4">
-                   {monthsData.filter(month => month.races.length > 0).map((monthData, index, filteredMonths) => (
+                   {monthsData.filter(month => month.races.length > 0).map((monthData, index) => (
                      <div key={monthData.month} className="flex flex-col items-center relative">
                        {/* Vertical connector to main trunk */}
                        <div className="w-1 h-4 bg-gray-400"></div>
                        
                        {/* Month Node */}
                        <div 
-                         className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 sm:px-4 lg:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-md cursor-pointer hover:from-green-600 hover:to-green-700 transition-all duration-200 border-2 border-green-200 flex items-center space-x-1 sm:space-x-2 text-sm sm:text-base"
-                         onClick={() => toggleMonth(monthData.month)}
+                         className={`text-white px-3 sm:px-4 lg:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-md transition-all duration-200 border-2 flex items-center space-x-1 sm:space-x-2 text-sm sm:text-base ${
+                           monthData.races.length > 0 
+                             ? 'bg-gradient-to-r from-green-500 to-green-600 border-green-200 cursor-pointer hover:from-green-600 hover:to-green-700' 
+                             : 'bg-gradient-to-r from-gray-400 to-gray-500 border-gray-200'
+                         }`}
+                         onClick={() => monthData.races.length > 0 && toggleMonth(monthData.month)}
                        >
                          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                          <span className="whitespace-nowrap">{monthData.monthName}</span>
-                         <span className="bg-white text-green-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-bold flex-shrink-0">
+                         <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-bold flex-shrink-0 ${
+                           monthData.races.length > 0 
+                             ? 'bg-white text-green-700' 
+                             : 'bg-gray-200 text-gray-600'
+                         }`}>
                            {monthData.races.length}
                          </span>
-                         <div className="text-white flex-shrink-0">
-                           {monthData.isExpanded ? (
-                             <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
-                           ) : (
-                             <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
-                           )}
-                         </div>
+                         {monthData.races.length > 0 && (
+                           <div className="text-white flex-shrink-0">
+                             {monthData.isExpanded ? (
+                               <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                             ) : (
+                               <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                             )}
+                           </div>
+                         )}
                        </div>
 
                       {/* Races Branch */}
-                      {monthData.isExpanded && (
-                        <div className="mt-4 flex flex-col items-center">
-                          {/* Branch connector */}
-                          <div className="w-1 h-4 bg-gray-400"></div>
-                          
-                          {/* Races */}
-                           <div className="space-y-2 sm:space-y-3 max-w-xs">
-                             {monthData.races.map((race, raceIndex) => (
-                               <div key={race._id} className="relative">
-                                 {/* Race connector line */}
-                                 {raceIndex === 0 && monthData.races.length > 1 && (
-                                   <div className="absolute -top-1 sm:-top-2 left-1/2 transform -translate-x-1/2 w-full h-0.5 sm:h-1 bg-gray-300"></div>
-                                 )}
-                                 
-                                 {/* Vertical connector to race */}
-                                 <div className="flex justify-center">
-                                   <div className="w-0.5 sm:w-1 h-2 sm:h-3 bg-gray-300"></div>
-                                 </div>
-                                 
-                                 {/* Race Node */}
-                                 <div className="bg-white border-2 border-gray-300 rounded-lg p-2 sm:p-3 shadow-sm hover:shadow-md transition-shadow hover:border-blue-300">
-                                   <div className="flex items-start justify-between mb-1 sm:mb-2">
-                                     <h4 className="font-medium text-gray-900 text-xs sm:text-sm leading-tight max-w-32 sm:max-w-48">
-                                       {race.name}
-                                     </h4>
-                                     <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ml-1 sm:ml-2 flex-shrink-0 ${getStatusColor(race.status)}`}>
+                      {monthData.isExpanded && monthData.races.length > 0 && (
+                        <div className="mt-4 space-y-3">
+                          {monthData.races.map((race) => (
+                            <div
+                              key={race._id}
+                              className="bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300 hover:bg-gray-100 transition-colors duration-200"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-gray-900 mb-1">
+                                    {race.name}
+                                  </h4>
+                                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                                     <span className="flex items-center gap-1">
+                                       <Calendar className="w-4 h-4" />
+                                       {formatDate(race.date)}
+                                     </span>
+                                     <span className="flex items-center gap-1">
+                                       <Clock className="w-4 h-4" />
+                                       {race.distancia}km
+                                     </span>                                    
+                                     {race.time && (
+                                       <span className="text-sm font-medium text-gray-700">
+                                         {race.time}
+                                       </span>
+                                     )}
+                                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(race.status)}`}>
                                        {getStatusText(race.status)}
                                      </span>
                                    </div>
-                                   
-                                   <div className="space-y-0.5 sm:space-y-1 text-xs text-gray-600">
-                                     <div className="flex items-center space-x-1">
-                                       <Calendar className="w-3 h-3 flex-shrink-0" />
-                                       <span className="text-xs">{formatDate(race.date)}</span>
-                                       {race.time && (
-                                         <>
-                                           <Clock className="w-3 h-3 ml-1 sm:ml-2 flex-shrink-0" />
-                                           <span className="text-xs">{race.time}</span>
-                                         </>
-                                       )}
-                                     </div>
-                                     
-                                     <div className="flex items-center justify-between">
-                                       <span className="font-medium text-blue-600 text-xs">
-                                         {formatPrice(race.price)}
-                                       </span>
-                                       {race.distancia && (
-                                         <span className="text-gray-500 text-xs">
-                                           {race.distancia}km
-                                         </span>
-                                       )}
-                                     </div>
-                                     
-                                     {race.urlInscricao && (
-                                       <div className="pt-0.5 sm:pt-1">
-                                         <a 
-                                           href={race.urlInscricao} 
-                                           target="_blank" 
-                                           rel="noopener noreferrer"
-                                           className="inline-flex items-center space-x-1 text-blue-600 hover:text-blue-800 transition-colors"
-                                         >
-                                           <ExternalLink className="w-3 h-3" />
-                                           <span className="text-xs">Inscrição</span>
-                                         </a>
-                                       </div>
-                                     )}
-                                   </div>
-                                 </div>
-                               </div>
-                             ))}
-                           </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
