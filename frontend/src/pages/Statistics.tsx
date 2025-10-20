@@ -106,63 +106,63 @@ const Statistics: React.FC = () => {
       {
         title: 'Total de Corridas',
         value: statistics.totalRaces,
-        icon: <Trophy className="w-6 h-6" />,
+        icon: <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-blue-600',
         description: 'Corridas no período'
       },
       {
         title: 'Valor Total Gasto',
         value: formatCurrency(statistics.totalCost),
-        icon: <DollarSign className="w-6 h-6" />,
+        icon: <DollarSign className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-green-600',
         description: 'Investimento em corridas'
       },
       {
         title: 'Distância Total',
         value: formatDistance(statistics.totalDistance),
-        icon: <MapPin className="w-6 h-6" />,
+        icon: <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-purple-600',
         description: 'Quilômetros percorridos'
       },
       {
         title: 'Inscrições',
         value: statistics.statusCounts.inscrito,
-        icon: <Target className="w-6 h-6" />,
+        icon: <Target className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-blue-500',
         description: STATUS_LABELS.inscrito
       },
       {
         title: 'Concluídas',
         value: statistics.statusCounts.concluido,
-        icon: <Trophy className="w-6 h-6" />,
+        icon: <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-green-500',
         description: STATUS_LABELS.concluido
       },
       {
         title: 'Pretendo Ir',
         value: statistics.statusCounts.pretendo_ir,
-        icon: <Clock className="w-6 h-6" />,
+        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-yellow-500',
         description: STATUS_LABELS.pretendo_ir
       },
       {
         title: 'Canceladas',
         value: statistics.statusCounts.cancelada,
-        icon: <X className="w-6 h-6" />,
+        icon: <X className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-red-500',
         description: STATUS_LABELS.cancelada
       },
       {
         title: 'Na Dúvida',
         value: statistics.statusCounts.na_duvida,
-        icon: <Activity className="w-6 h-6" />,
+        icon: <Activity className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-gray-500',
         description: STATUS_LABELS.na_duvida
       },
       {
         title: 'Não Pude Ir',
         value: statistics.statusCounts.nao_pude_ir,
-        icon: <Clock className="w-6 h-6" />,
+        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-orange-500',
         description: STATUS_LABELS.nao_pude_ir
       }
@@ -170,18 +170,18 @@ const Statistics: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            <BarChart3 className="inline-block w-8 h-8 mr-3 text-blue-600" />
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
             Estatísticas de Corridas
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm sm:text-base">
             Análise detalhada do seu desempenho e participação em corridas
             {startDate && endDate && (
-              <span className="block mt-1 text-sm">
+              <span className="block mt-1 text-xs sm:text-sm">
                 Período: {formatDateForDisplay(startDate)} até {formatDateForDisplay(endDate)}
               </span>
             )}
@@ -189,13 +189,13 @@ const Statistics: React.FC = () => {
         </div>
 
         {/* Filtros de Data */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Filter className="w-5 h-5 text-gray-500" />
-            <h2 className="text-lg font-semibold text-gray-900">Filtrar por Período</h2>
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4">
+            <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900">Filtrar por Período</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
                 Data Inicial
@@ -205,7 +205,7 @@ const Statistics: React.FC = () => {
                 id="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                 placeholder="dd/mm/aaaa"
                 lang="pt-BR"
               />
@@ -225,7 +225,7 @@ const Statistics: React.FC = () => {
                 id="endDate"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                 placeholder="dd/mm/aaaa"
                 lang="pt-BR"
               />
@@ -240,20 +240,20 @@ const Statistics: React.FC = () => {
 
         {/* Error State */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 sm:mb-8">
             <div className="flex items-center">
-              <X className="w-5 h-5 text-red-500 mr-2" />
-              <p className="text-red-700">{error}</p>
+              <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mr-2" />
+              <p className="text-red-700 text-sm sm:text-base">{error}</p>
             </div>
           </div>
         )}
 
         {/* Loading State */}
         {loading && (
-          <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 mb-6 sm:mb-8">
             <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-gray-600">Carregando estatísticas...</span>
+              <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-3 text-gray-600 text-sm sm:text-base">Carregando estatísticas...</span>
             </div>
           </div>
         )}
@@ -261,18 +261,18 @@ const Statistics: React.FC = () => {
         {/* Statistics Cards */}
         {statistics && !loading && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {getStatCards().map((card, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-4">
+                <div key={index} className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
                     <div className={`${card.color}`}>
                       {card.icon}
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-gray-900">{card.value}</p>
+                      <p className="text-xl sm:text-2xl font-bold text-gray-900">{card.value}</p>
                     </div>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-1">{card.title}</h3>
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-1">{card.title}</h3>
                   {card.description && (
                     <p className="text-xs text-gray-500">{card.description}</p>
                   )}
@@ -281,29 +281,35 @@ const Statistics: React.FC = () => {
             </div>
 
             {/* Period Summary */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                <Calendar className="inline-block w-5 h-5 mr-2 text-blue-600" />
-                Resumo do Período ({formatDateForDisplay(startDate)} - {formatDateForDisplay(endDate)})
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
+                <span className="hidden sm:inline">Resumo do Período ({formatDateForDisplay(startDate)} - {formatDateForDisplay(endDate)})</span>
+                <span className="sm:hidden">Resumo do Período</span>
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <TrendingUp className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-blue-900">{statistics.totalRaces}</p>
-                  <p className="text-sm text-blue-700">Corridas Registradas</p>
+              {/* Mobile Period Display */}
+              <div className="sm:hidden mb-4 text-sm text-gray-600 text-center">
+                {formatDateForDisplay(startDate)} - {formatDateForDisplay(endDate)}
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                <div className="text-center p-3 sm:p-4 bg-blue-50 rounded-lg">
+                  <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mx-auto mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold text-blue-900">{statistics.totalRaces}</p>
+                  <p className="text-xs sm:text-sm text-blue-700">Corridas Registradas</p>
                 </div>
                 
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <DollarSign className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-green-900">{formatCurrency(statistics.totalCost)}</p>
-                  <p className="text-sm text-green-700">Investimento Total</p>
+                <div className="text-center p-3 sm:p-4 bg-green-50 rounded-lg">
+                  <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mx-auto mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold text-green-900">{formatCurrency(statistics.totalCost)}</p>
+                  <p className="text-xs sm:text-sm text-green-700">Investimento Total</p>
                 </div>
                 
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <MapPin className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-purple-900">{formatDistance(statistics.totalDistance)}</p>
-                  <p className="text-sm text-purple-700">Distância Total</p>
+                <div className="text-center p-3 sm:p-4 bg-purple-50 rounded-lg">
+                  <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mx-auto mb-2" />
+                  <p className="text-xl sm:text-2xl font-bold text-purple-900">{formatDistance(statistics.totalDistance)}</p>
+                  <p className="text-xs sm:text-sm text-purple-700">Distância Total</p>
                 </div>
               </div>
             </div>
@@ -312,10 +318,10 @@ const Statistics: React.FC = () => {
 
         {/* Empty State */}
         {statistics && statistics.totalRaces === 0 && !loading && (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma corrida encontrada</h3>
-            <p className="text-gray-600">
+          <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 text-center">
+            <BarChart3 className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Nenhuma corrida encontrada</h3>
+            <p className="text-gray-600 text-sm sm:text-base px-4">
               Não há corridas registradas no período selecionado.
               <br />
               Tente ajustar as datas ou adicionar novas corridas.

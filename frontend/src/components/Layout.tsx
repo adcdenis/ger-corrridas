@@ -42,20 +42,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo e título */}
-            <div className="flex items-center">
+            <div className="flex items-center min-w-0 flex-1">
               <div className="flex-shrink-0">
-                <h1 className="text-xl font-bold text-gray-900">
-                  Gerenciador de Corridas
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+                  <span className="hidden sm:inline">Gerenciador de Corridas</span>
+                  <span className="sm:hidden">Ger. Corridas</span>
                 </h1>
               </div>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden lg:flex space-x-6 xl:space-x-8">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -76,29 +77,29 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             </nav>
 
             {/* User menu */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-2 text-sm text-gray-700">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-700">
                 <User className="h-4 w-4" />
-                <span>{user?.name}</span>
+                <span className="truncate max-w-24 sm:max-w-none">{user?.name}</span>
               </div>
               
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                className="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               >
-                <LogOut className="h-4 w-4 mr-2" />
-                <span className="hidden md:inline">Sair</span>
+                <LogOut className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Sair</span>
               </button>
 
               {/* Mobile menu button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
                 ) : (
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
                 )}
               </button>
             </div>
@@ -107,8 +108,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+          <div className="lg:hidden">
+            <div className="pt-2 pb-3 space-y-1 bg-white border-t border-gray-200 shadow-lg">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -116,7 +117,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block pl-3 pr-4 py-2 text-base font-medium transition-colors ${
+                    className={`block pl-3 pr-4 py-3 text-base font-medium transition-colors ${
                       isActive(item.href)
                         ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
@@ -133,7 +134,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="border-t border-gray-200 pt-4 pb-3">
                 <div className="flex items-center px-4">
                   <User className="h-5 w-5 text-gray-400 mr-3" />
-                  <span className="text-base font-medium text-gray-800">{user?.name}</span>
+                  <span className="text-base font-medium text-gray-800 truncate">{user?.name}</span>
                 </div>
               </div>
             </div>
@@ -142,8 +143,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+      <main className="max-w-7xl mx-auto py-4 sm:py-6 px-3 sm:px-6 lg:px-8">
+        <div className="py-4 sm:py-6">
           {children}
         </div>
       </main>

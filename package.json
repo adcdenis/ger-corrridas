@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Sistema de gerenciamento de corridas com React + Vite + MongoDB",
    "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd backend && ts-node src/server.ts",
+    "server:dev": "cd backend && npm run dev",
     "client": "cd frontend && npm run dev",
+    "client:dev": "cd frontend && npm run dev",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "build": "cd frontend && npm run build",
     "vercel-build": "cd frontend && npm install && npm run build",
