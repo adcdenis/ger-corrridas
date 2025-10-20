@@ -9,23 +9,20 @@ import { type Race, STATUS_LABELS, STATUS_COLORS } from '../types/index';
 import { Pencil, Trash2, Plus, ExternalLink } from 'lucide-react';
 
 const raceSchema = z.object({
-  name: z.string().min(1, 'Nome é obrigatório'),
-  date: z.string().min(1, 'Data é obrigatória'),
-  time: z.string().min(1, 'Horário é obrigatório'),
-  price: z.number().min(0, 'Preço deve ser maior ou igual a 0'),
-  distancia: z.number()
-    .min(0.01, 'Distância deve ser maior que 0')
-    .refine((val) => {
-      // Verifica se tem no máximo 2 casas decimais
+    name: z.string().min(1, 'Nome é obrigatório'),
+    date: z.string().min(1, 'Data é obrigatória'),
+    time: z.string().min(1, 'Horário é obrigatório'),
+    price: z.number().min(0, 'Preço deve ser maior ou igual a 0'),
+    distancia: z.number().min(0.01, 'Distância deve ser maior que 0').refine((val) => {
       return /^\d+(\.\d{1,2})?$/.test(val.toString());
     }, 'Distância deve ter no máximo 2 casas decimais'),
-  urlInscricao: z.string().url('URL deve ser válida').optional().or(z.literal('')),
-  status: z.enum(['inscrito', 'pretendo_ir', 'concluido', 'na_duvida', 'cancelada', 'nao_pude_ir']),
-  tempoConlusao: z.string()
-    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/, 'Tempo deve estar no formato HH:MM:SS')
-    .optional()
-    .or(z.literal(''))
-});
+    urlInscricao: z.string().url('URL deve ser válida').optional().or(z.literal('')),
+    status: z.enum(['inscrito', 'pretendo_ir', 'concluido', 'na_duvida', 'cancelada', 'nao_pude_ir']),
+    tempoConlusao: z.string().optional().refine((val) => {
+      if (!val || val.trim() === '') return true;
+      return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(val);
+    }, 'Formato deve ser HH:MM:SS')
+  });
 
 type RaceFormData = z.infer<typeof raceSchema>;
 
@@ -74,10 +71,10 @@ export const Races: React.FC = () => {
 
   const onSubmit = async (data: RaceFormData) => {
     try {
-      // Converter data de DD/MM/YYYY para YYYY-MM-DD antes de enviar para o backend
+      // A data já vem no formato YYYY-MM-DD do input type="date"
       const formattedData = {
         ...data,
-        date: data.date.split('/').reverse().join('-')
+        date: data.date // Não precisa mais converter, já está no formato correto
       };
       
       if (editingRace) {
@@ -101,23 +98,23 @@ export const Races: React.FC = () => {
     setEditingRace(race);
     setValue('name', race.name);
     
-    // Converter data para formato DD/MM/YYYY (formato do input personalizado)
+    // O input type="date" espera formato YYYY-MM-DD
     let formattedDate = race.date;
     
-    // Se a data está no formato YYYY-MM-DD (ISO), converter para DD/MM/YYYY
-    if (race.date.includes('-')) {
-      const dateParts = race.date.split('T')[0].split('-'); // Remove time part if exists
+    // Se a data está no formato DD/MM/YYYY, converter para YYYY-MM-DD
+    if (race.date.includes('/')) {
+      const dateParts = race.date.split('/');
       if (dateParts.length === 3) {
-        // Assumindo YYYY-MM-DD
-        const year = dateParts[0];
+        // Assumindo DD/MM/YYYY
+        const day = dateParts[0];
         const month = dateParts[1];
-        const day = dateParts[2];
-        formattedDate = `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+        const year = dateParts[2];
+        formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       }
     }
-    // Se a data já está no formato DD/MM/YYYY, usar diretamente
-    else if (race.date.includes('/')) {
-      formattedDate = race.date;
+    // Se a data já está no formato YYYY-MM-DD (ISO), usar diretamente
+    else if (race.date.includes('-')) {
+      formattedDate = race.date.split('T')[0]; // Remove time part if exists
     }
     
     setValue('date', formattedDate);
@@ -170,8 +167,7 @@ export const Races: React.FC = () => {
           onClick={handleNewRace}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus items-center justify-center gap-2 w-full sm:w-auto"
         >
-          <Plus size={20} />
-          Nova Corrida
+          <Plus size={20} />         
         </button>
       </div>
 
@@ -205,45 +201,8 @@ export const Races: React.FC = () => {
                 </label>
                 <input
                   {...register('date')}
-                  type="text"
+                  type="date"
                   id="date"
-                  onChange={(e) => {
-                    let value = e.target.value.replace(/[^0-9]/g, '');
-                    if (value.length >= 3) {
-                      value = value.slice(0, 2) + '/' + value.slice(2);
-                    }
-                    if (value.length >= 6) {
-                      value = value.slice(0, 5) + '/' + value.slice(5, 9);
-                    }
-                    if (value.length === 10) {
-                      const [day, month, year] = value.split('/');
-                      const d = parseInt(day);
-                      const m = parseInt(month);
-                      const y = parseInt(year);
-                      if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2100) {
-                        setValue('date', value);
-                      }
-                    } else if (value.length <= 8) {
-                      setValue('date', value);
-                    }
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value;
-                    if (value.length === 10) {
-                      const [day, month, year] = value.split('/');
-                      const d = parseInt(day);
-                      const m = parseInt(month);
-                      const y = parseInt(year);
-                      if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2100) {
-                        const formattedDate = `${d.toString().padStart(2, '0')}/${m.toString().padStart(2, '0')}/${y}`;
-                        setValue('date', formattedDate);
-                      }
-                    }
-                  }}
-                  placeholder="DD/MM/YYYY"
-                  maxLength={10}
-                  pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-                  title="Formato: DD/MM/YYYY (ex: 31/12/2025)"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
                 {errors.date && (
@@ -257,40 +216,8 @@ export const Races: React.FC = () => {
                 </label>
                 <input
                   {...register('time')}
-                  type="text"
+                  type="time"
                   id="time"
-                  onChange={(e) => {
-                    let value = e.target.value.replace(/[^0-9]/g, '');
-                    if (value.length >= 3) {
-                      value = value.slice(0, 2) + ':' + value.slice(2, 4);
-                    }
-                    if (value.length === 5) {
-                      const [hours, minutes] = value.split(':');
-                      const h = parseInt(hours);
-                      const m = parseInt(minutes);
-                      if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
-                        setValue('time', value);
-                      }
-                    } else if (value.length <= 2) {
-                      setValue('time', value);
-                    }
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value;
-                    if (value.length === 5) {
-                      const [hours, minutes] = value.split(':');
-                      const h = parseInt(hours);
-                      const m = parseInt(minutes);
-                      if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
-                        const formattedTime = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-                        setValue('time', formattedTime);
-                      }
-                    }
-                  }}
-                  placeholder="HH:MM"
-                  maxLength={5}
-                  pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
-                  title="Formato: HH:MM (24 horas, ex: 14:30)"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
                 {errors.time && (
@@ -339,14 +266,14 @@ export const Races: React.FC = () => {
 
             <div>
               <label htmlFor="urlInscricao" className="block text-sm font-medium text-gray-700 mb-2">
-                URL de Inscrição
+                URL de Inscrição (opcional)
               </label>
               <input
                 {...register('urlInscricao')}
                 type="url"
                 id="urlInscricao"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://exemplo.com/inscricao"
+                placeholder="https://exemplo.com/inscricao (opcional)"
               />
               {errors.urlInscricao && (
                 <p className="mt-1 text-sm text-red-600">{errors.urlInscricao.message}</p>

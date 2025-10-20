@@ -123,7 +123,10 @@ export const validateRaceCreation = [
   
   body('tempoConlusao')
     .optional()
-    .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)
+    .custom((value) => {
+      if (!value || value.trim() === '') return true;
+      return /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(value);
+    })
     .withMessage('Tempo de conclusão deve estar no formato HH:MM:SS'),
   
   handleValidationErrors
@@ -203,7 +206,10 @@ export const validateRaceUpdate = [
   
   body('tempoConlusao')
     .optional()
-    .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)
+    .custom((value) => {
+      if (!value || value.trim() === '') return true;
+      return /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(value);
+    })
     .withMessage('Tempo de conclusão deve estar no formato HH:MM:SS'),
   
   handleValidationErrors
