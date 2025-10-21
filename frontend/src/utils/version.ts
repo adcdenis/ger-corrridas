@@ -1,9 +1,9 @@
 // Função para obter informações de versão e copyright
 export const getAppInfo = () => {
-  // Informações estáticas baseadas no package.json
+  // Informações obtidas do package.json via Vite
   const appInfo = {
     name: 'Gerenciador de Corridas',
-    version: '1.0.0',
+    version: __APP_VERSION__ || '1.0.0', // Fallback para desenvolvimento
     description: 'Sistema de gerenciamento de corridas',
     author: 'Desenvolvido com ❤️',
     year: new Date().getFullYear(),
