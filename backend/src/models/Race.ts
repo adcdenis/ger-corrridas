@@ -11,7 +11,7 @@ export interface IRace extends Document {
   distancia: number; // Distance in kilometers with 2 decimal places
   urlInscricao: string;
   status: RaceStatus;
-  tempoConlusao?: string; // Format: "HH:MM:SS" - Completion time
+  tempoConclusao?: string; // Format: "HH:MM:SS" - Completion time
   createdAt: Date;
   updatedAt: Date;
 }
@@ -75,7 +75,7 @@ const raceSchema = new Schema<IRace>({
       message: 'Status deve ser: inscrito, pretendo_ir, concluido, na_duvida, cancelada ou nao_pude_ir'
     }
   },
-  tempoConlusao: {
+  tempoConclusao: {
     type: String,
     required: false,
     match: [/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/, 'Tempo de conclusão deve estar no formato HH:MM:SS']

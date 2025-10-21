@@ -8,7 +8,8 @@ import {
   BarChart3, 
   Map,
   Menu,
-  X
+  X,
+  Download
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useState } from 'react';
@@ -34,6 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Corridas', href: '/races', icon: Calendar },
     { name: 'Estatísticas', href: '/stats', icon: BarChart3 },
     { name: 'Mapa Mental', href: '/mindmap', icon: Map },
+    { name: 'Importar/Exportar', href: '/import-export', icon: Download },
   ];
 
   const isActive = (href: string) => {

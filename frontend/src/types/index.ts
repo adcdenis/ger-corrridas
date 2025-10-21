@@ -21,7 +21,7 @@ export interface Race {
   distancia: number; // Distance in kilometers with 2 decimal places
   urlInscricao: string;
   status: RaceStatus;
-  tempoConlusao?: string; // Format: "HH:MM:SS" - Completion time
+  tempoConclusao?: string; // Format: "HH:MM:SS" - Completion time
   createdAt: string;
   updatedAt: string;
 }

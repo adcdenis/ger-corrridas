@@ -121,7 +121,7 @@ export const validateRaceCreation = [
     .isIn(['inscrito', 'pretendo_ir', 'concluido', 'na_duvida', 'cancelada', 'nao_pude_ir'])
     .withMessage('Status deve ser: inscrito, pretendo_ir, concluido, na_duvida, cancelada ou nao_pude_ir'),
   
-  body('tempoConlusao')
+  body('tempoConclusao')
     .optional()
     .custom((value) => {
       if (!value || value.trim() === '') return true;
@@ -204,7 +204,7 @@ export const validateRaceUpdate = [
     .isIn(['inscrito', 'pretendo_ir', 'concluido', 'na_duvida', 'cancelada', 'nao_pude_ir'])
     .withMessage('Status deve ser: inscrito, pretendo_ir, concluido, na_duvida, cancelada ou nao_pude_ir'),
   
-  body('tempoConlusao')
+  body('tempoConclusao')
     .optional()
     .custom((value) => {
       if (!value || value.trim() === '') return true;

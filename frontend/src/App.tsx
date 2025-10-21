@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -11,6 +10,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Races } from './pages/Races';
 import { Statistics } from './pages/Statistics';
 import { MindMap } from './pages/MindMap';
+import { ImportExportPage } from './pages/ImportExportPage';
 
 // Criar cliente do React Query
 const queryClient = new QueryClient({
@@ -21,14 +21,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// Componente temporário para páginas não implementadas
-const ComingSoon: React.FC<{ title: string }> = ({ title }) => (
-  <div className="text-center py-12">
-    <h1 className="text-2xl font-bold text-gray-900 mb-4">{title}</h1>
-    <p className="text-gray-600">Esta página será implementada em breve.</p>
-  </div>
-);
 
 function App() {
   return (
@@ -78,6 +70,16 @@ function App() {
                   <ProtectedRoute>
                     <Layout>
                       <MindMap />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/import-export"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ImportExportPage />
                     </Layout>
                   </ProtectedRoute>
                 }
