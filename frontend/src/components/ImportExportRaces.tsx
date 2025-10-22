@@ -66,7 +66,7 @@ const ImportExportRaces: React.FC<ImportExportRacesProps> = ({ races, onRacesUpd
         distancia: race.distancia,
         urlInscricao: race.urlInscricao,
         status: race.status,
-        tempoConclusao: race.tempoConclusao
+        tempoConclusao: race.tempoConclusao || ""
       }));
 
       const dataStr = JSON.stringify(exportData, null, 2);

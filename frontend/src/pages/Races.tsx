@@ -18,7 +18,7 @@ const raceSchema = z.object({
     }, 'Distância deve ter no máximo 2 casas decimais'),
     urlInscricao: z.string().url('URL deve ser válida').optional().or(z.literal('')),
     status: z.enum(['inscrito', 'pretendo_ir', 'concluido', 'na_duvida', 'cancelada', 'nao_pude_ir']),
-    tempoConlusao: z.string().optional().refine((val) => {
+    tempoConclusao: z.string().optional().refine((val) => {
       if (!val || val.trim() === '') return true;
       return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(val);
     }, 'Formato deve ser HH:MM:SS')
@@ -128,7 +128,7 @@ export const Races: React.FC = () => {
     setValue('distancia', race.distancia);
     setValue('urlInscricao', race.urlInscricao);
     setValue('status', race.status);
-    setValue('tempoConlusao', race.tempoConlusao || '');
+    setValue('tempoConclusao', race.tempoConclusao || '');
     setShowForm(true);
   };
 
@@ -308,18 +308,18 @@ export const Races: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="tempoConlusao" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="tempoConclusao" className="block text-sm font-medium text-gray-700 mb-2">
                   Tempo de Conclusão (opcional)
                 </label>
                 <input
-                  {...register('tempoConlusao')}
+                  {...register('tempoConclusao')}
                   type="time"
                   step="1"
-                  id="tempoConlusao"
+                  id="tempoConclusao"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                {errors.tempoConlusao && (
-                  <p className="mt-1 text-sm text-red-600">{errors.tempoConlusao.message}</p>
+                {errors.tempoConclusao && (
+                  <p className="mt-1 text-sm text-red-600">{errors.tempoConclusao.message}</p>
                 )}
               </div>
             </div>
@@ -430,7 +430,7 @@ export const Races: React.FC = () => {
                      </td>
                      <td className="px-2 py-3 whitespace-nowrap">
                        <div className="text-xs text-gray-900">
-                         {race.tempoConlusao || '-'}
+                         {race.tempoConclusao || '-'}
                        </div>
                      </td>
                      <td className="px-2 py-3 whitespace-nowrap">
@@ -527,9 +527,9 @@ export const Races: React.FC = () => {
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${STATUS_COLORS[race.status]}`}>
                     {STATUS_LABELS[race.status]}
                   </span>
-                  {race.tempoConlusao && (
+                  {race.tempoConclusao && (
                     <div className="text-sm text-gray-600">
-                      <span className="text-gray-500">Tempo:</span> {race.tempoConlusao}
+                      <span className="text-gray-500">Tempo:</span> {race.tempoConclusao}
                     </div>
                   )}
                 </div>

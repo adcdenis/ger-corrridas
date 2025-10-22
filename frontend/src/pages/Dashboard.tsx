@@ -112,6 +112,9 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
                     Distância
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tempo de Conclusão
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -144,6 +147,12 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
                       <div className="flex items-center">
                         <Target className="w-4 h-4 mr-1 text-gray-400" />
                         {race.distancia} km
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-1 text-gray-400" />
+                        {race.tempoConclusao || 'N/A'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -197,6 +206,10 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
                   <div className="flex items-center">
                     <Target className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
                     <span className="truncate">{race.distancia} km</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+                    <span className="truncate">{race.tempoConclusao || 'N/A'}</span>
                   </div>
                   <div className="flex items-center">
                     <Trophy className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
