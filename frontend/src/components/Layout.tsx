@@ -102,15 +102,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 )}
               </button>
             </div>
-          </div>
-
-          {/* Segunda linha - Nome do Sistema */}
-          <div className="pb-3 pt-1">
-            <h1 className="text-xl lg:text-2xl font-bold text-gray-900 text-center">
-              <span className="hidden sm:inline">Gerenciador de Corridas</span>
-              <span className="sm:hidden">Ger. Corridas</span>
-            </h1>
-          </div>
+          </div>         
         </div>
 
         {/* Mobile menu */}

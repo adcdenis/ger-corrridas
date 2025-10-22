@@ -167,15 +167,19 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <a 
-                        href={race.urlInscricao} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center text-blue-600 hover:text-blue-800"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-1" />
-                        Inscrição
-                      </a>
+                      {race.urlInscricao ? (
+                        <a 
+                          href={race.urlInscricao} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center text-blue-600 hover:text-blue-800"
+                        >
+                          <ExternalLink className="w-4 h-4 mr-1" />
+                          Inscrição
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -217,17 +221,19 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
                   </div>
                 </div>
                 
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <a 
-                    href={race.urlInscricao} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    Ver Inscrição
-                  </a>
-                </div>
+                {race.urlInscricao && (
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <a 
+                      href={race.urlInscricao} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      Ver Inscrição
+                    </a>
+                  </div>
+                )}
               </div>
             ))}
           </div>

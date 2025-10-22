@@ -33,7 +33,7 @@ interface StatisticsData {
 
 interface StatCard {
   title: string;
-  value: string | number;
+  value: string | number | React.ReactNode;
   icon: React.ReactNode;
   color: string;
   description?: string;
@@ -102,20 +102,239 @@ const Statistics: React.FC = () => {
   const getStatCards = (): StatCard[] => {
     if (!statistics) return [];
 
+    // Calcular melhor tempo nos 5km (>= 5km e < 6km)
+    const getBest5kTime = (): { time: string; raceName: string } => {
+      if (!statistics.races) return { time: 'N/A', raceName: '' };
+      
+      const races5k = statistics.races.filter(race => 
+        race.status === 'concluido' && 
+        race.distancia >= 5 && 
+        race.distancia < 6 && 
+        race.tempoConclusao
+      );
+      
+      if (races5k.length === 0) return { time: 'N/A', raceName: '' };
+      
+      // Converter tempo para segundos para comparação
+      const timeToSeconds = (timeStr: string): number => {
+        const parts = timeStr.split(':');
+        if (parts.length === 3) {
+          return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+        }
+        return 0;
+      };
+      
+      const bestRace = races5k.reduce((best, current) => {
+        const currentSeconds = timeToSeconds(current.tempoConclusao!);
+        const bestSeconds = timeToSeconds(best.tempoConclusao!);
+        return currentSeconds < bestSeconds ? current : best;
+      });
+      
+      return { 
+        time: bestRace.tempoConclusao!, 
+        raceName: bestRace.name 
+      };
+    };
+
+    // Calcular melhor tempo nos 10km (>= 10km e < 11km)
+    const getBest10kTime = (): { time: string; raceName: string } => {
+      if (!statistics.races) return { time: 'N/A', raceName: '' };
+      
+      const races10k = statistics.races.filter(race => 
+        race.status === 'concluido' && 
+        race.distancia >= 10 && 
+        race.distancia < 11 && 
+        race.tempoConclusao
+      );
+      
+      if (races10k.length === 0) return { time: 'N/A', raceName: '' };
+      
+      // Converter tempo para segundos para comparação
+      const timeToSeconds = (timeStr: string): number => {
+        const parts = timeStr.split(':');
+        if (parts.length === 3) {
+          return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+        }
+        return 0;
+      };
+      
+      const bestRace = races10k.reduce((best, current) => {
+        const currentSeconds = timeToSeconds(current.tempoConclusao!);
+        const bestSeconds = timeToSeconds(best.tempoConclusao!);
+        return currentSeconds < bestSeconds ? current : best;
+      });
+      
+      return { 
+        time: bestRace.tempoConclusao!, 
+        raceName: bestRace.name 
+      };
+    };
+
+    // Calcular melhor tempo nos 21km (>= 21km e < 22km)
+    const getBest21kTime = (): { time: string; raceName: string } => {
+      if (!statistics.races) return { time: 'N/A', raceName: '' };
+      
+      const races21k = statistics.races.filter(race => 
+        race.status === 'concluido' && 
+        race.distancia >= 21 && 
+        race.distancia < 22 && 
+        race.tempoConclusao
+      );
+      
+      if (races21k.length === 0) return { time: 'N/A', raceName: '' };
+      
+      // Converter tempo para segundos para comparação
+      const timeToSeconds = (timeStr: string): number => {
+        const parts = timeStr.split(':');
+        if (parts.length === 3) {
+          return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+        }
+        return 0;
+      };
+      
+      const bestRace = races21k.reduce((best, current) => {
+        const currentSeconds = timeToSeconds(current.tempoConclusao!);
+        const bestSeconds = timeToSeconds(best.tempoConclusao!);
+        return currentSeconds < bestSeconds ? current : best;
+      });
+      
+      return { 
+        time: bestRace.tempoConclusao!, 
+        raceName: bestRace.name 
+      };
+    };
+
+    // Calcular melhor tempo nos 42km (>= 42km e < 43km)
+    const getBest42kTime = (): { time: string; raceName: string } => {
+      if (!statistics.races) return { time: 'N/A', raceName: '' };
+      
+      const races42k = statistics.races.filter(race => 
+        race.status === 'concluido' && 
+        race.distancia >= 42 && 
+        race.distancia < 43 && 
+        race.tempoConclusao
+      );
+      
+      if (races42k.length === 0) return { time: 'N/A', raceName: '' };
+      
+      // Converter tempo para segundos para comparação
+      const timeToSeconds = (timeStr: string): number => {
+        const parts = timeStr.split(':');
+        if (parts.length === 3) {
+          return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+        }
+        return 0;
+      };
+      
+      const bestRace = races42k.reduce((best, current) => {
+        const currentSeconds = timeToSeconds(current.tempoConclusao!);
+        const bestSeconds = timeToSeconds(best.tempoConclusao!);
+        return currentSeconds < bestSeconds ? current : best;
+      });
+      
+      return { 
+        time: bestRace.tempoConclusao!, 
+        raceName: bestRace.name 
+      };
+    };
+
+    const best5k = getBest5kTime();
+    const best10k = getBest10kTime();
+    const best21k = getBest21kTime();
+    const best42k = getBest42kTime();
+
+    // Calcular valor perdido com corridas 'não pude ir'
+    const getTotalValueLost = (): number => {
+      if (!statistics.races) return 0;
+      
+      const racesNaoPudeIr = statistics.races.filter(race => 
+        race.status === 'nao_pude_ir'
+      );
+      
+      return racesNaoPudeIr.reduce((total, race) => total + race.price, 0);
+    };
+
+    const totalValueLost = getTotalValueLost();
+
     return [
+      {
+        title: 'Melhor Tempo nos 5km',
+        value: (
+          <div className="text-right">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900">
+              {best5k.time}
+            </div>
+            {best5k.raceName && (
+              <div className="text-xs text-gray-500 mt-1 truncate" title={best5k.raceName}>
+                {best5k.raceName.length > 20 ? `${best5k.raceName.substring(0, 20)}...` : best5k.raceName}
+              </div>
+            )}
+          </div>
+        ),
+        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
+        color: 'text-orange-600',
+        description: 'Menor tempo em corridas de 5km'
+      },
+      {
+        title: 'Melhor Tempo nos 10km',
+        value: (
+          <div className="text-right">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900">
+              {best10k.time}
+            </div>
+            {best10k.raceName && (
+              <div className="text-xs text-gray-500 mt-1 truncate" title={best10k.raceName}>
+                {best10k.raceName.length > 20 ? `${best10k.raceName.substring(0, 20)}...` : best10k.raceName}
+              </div>
+            )}
+          </div>
+        ),
+        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
+        color: 'text-red-600',
+        description: 'Menor tempo em corridas de 10km'
+      },
+      {
+        title: 'Melhor Tempo nos 21km',
+        value: (
+          <div className="text-right">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900">
+              {best21k.time}
+            </div>
+            {best21k.raceName && (
+              <div className="text-xs text-gray-500 mt-1 truncate" title={best21k.raceName}>
+                {best21k.raceName.length > 20 ? `${best21k.raceName.substring(0, 20)}...` : best21k.raceName}
+              </div>
+            )}
+          </div>
+        ),
+        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
+        color: 'text-indigo-600',
+        description: 'Menor tempo em corridas de 21km'
+      },
+      {
+        title: 'Melhor Tempo nos 42km',
+        value: (
+          <div className="text-right">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900">
+              {best42k.time}
+            </div>
+            {best42k.raceName && (
+              <div className="text-xs text-gray-500 mt-1 truncate" title={best42k.raceName}>
+                {best42k.raceName.length > 20 ? `${best42k.raceName.substring(0, 20)}...` : best42k.raceName}
+              </div>
+            )}
+          </div>
+        ),
+        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
+        color: 'text-purple-700',
+        description: 'Menor tempo em corridas de 42km'
+      },
       {
         title: 'Total de Corridas',
         value: statistics.totalRaces,
         icon: <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-blue-600',
         description: 'Corridas no período'
-      },
-      {
-        title: 'Valor Total Gasto',
-        value: formatCurrency(statistics.totalCost),
-        icon: <DollarSign className="w-5 h-5 sm:w-6 sm:h-6" />,
-        color: 'text-green-600',
-        description: 'Investimento em corridas'
       },
       {
         title: 'Distância Total',
@@ -165,6 +384,20 @@ const Statistics: React.FC = () => {
         icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
         color: 'text-orange-500',
         description: STATUS_LABELS.nao_pude_ir
+      },
+      {
+        title: 'Valor Total Gasto',
+        value: formatCurrency(statistics.totalCost),
+        icon: <DollarSign className="w-5 h-5 sm:w-6 sm:h-6" />,
+        color: 'text-green-600',
+        description: 'Investimento em corridas'
+      },
+      {
+        title: 'Valor Perdido',
+        value: formatCurrency(totalValueLost),
+        icon: <X className="w-5 h-5 sm:w-6 sm:h-6" />,
+        color: 'text-red-700',
+        description: 'Valor gasto em corridas que não pude ir'
       }
     ];
   };
@@ -209,11 +442,6 @@ const Statistics: React.FC = () => {
                 placeholder="dd/mm/aaaa"
                 lang="pt-BR"
               />
-              {startDate && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Selecionado: {formatDateForDisplay(startDate)}
-                </p>
-              )}
             </div>
             
             <div>
@@ -229,11 +457,6 @@ const Statistics: React.FC = () => {
                 placeholder="dd/mm/aaaa"
                 lang="pt-BR"
               />
-              {endDate && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Selecionado: {formatDateForDisplay(endDate)}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -273,9 +496,6 @@ const Statistics: React.FC = () => {
                     </div>
                   </div>
                   <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-1">{card.title}</h3>
-                  {card.description && (
-                    <p className="text-xs text-gray-500">{card.description}</p>
-                  )}
                 </div>
               ))}
             </div>
