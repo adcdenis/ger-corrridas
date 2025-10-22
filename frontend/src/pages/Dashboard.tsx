@@ -419,7 +419,10 @@ export const Dashboard: React.FC = () => {
               <p className="text-sm font-medium text-gray-600">Nova Corrida</p>
             </div>
           </button>
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors sm:col-span-2 lg:col-span-1">
+          <button 
+            onClick={() => navigate('/reports')}
+            className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors sm:col-span-2 lg:col-span-1"
+          >
             <div className="text-center">
               <BarChart3 className="w-6 sm:w-8 h-6 sm:h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-600">Ver Relatórios</p>
