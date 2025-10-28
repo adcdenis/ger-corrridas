@@ -9,6 +9,7 @@ declare global {
       user?: {
         userId: string;
         email: string;
+        role: 'user' | 'admin';
       };
     }
   }
@@ -46,7 +47,8 @@ export const authenticateToken = async (
     // Adicionar informações do usuário ao request
     req.user = {
       userId: decoded.userId,
-      email: decoded.email
+      email: decoded.email,
+      role: user.role
     };
 
     next();
@@ -63,4 +65,28 @@ export const authenticateToken = async (
       message
     });
   }
+};
+
+export const requireAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.user) {
+    res.status(401).json({
+      success: false,
+      message: 'Usuário não autenticado'
+    });
+    return;
+  }
+
+  if (req.user.role !== 'admin') {
+    res.status(403).json({
+      success: false,
+      message: 'Acesso negado. Apenas administradores podem acessar este recurso.'
+    });
+    return;
+  }
+
+  next();
 };

@@ -8,6 +8,7 @@ import { connectDatabase } from './utils/database';
 // Importar rotas
 import authRoutes from './routes/auth';
 import raceRoutes from './routes/races';
+import userRoutes from './routes/users';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -59,9 +60,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Rotas da API
+// Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/races', raceRoutes);
+app.use('/api/users', userRoutes);
 
 // Middleware para rotas não encontradas
 app.use('*', (req, res) => {

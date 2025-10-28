@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   name: string;
+  role: 'user' | 'admin';
   googleId?: string;
   avatar?: string;
   createdAt: Date;
@@ -31,6 +32,11 @@ const userSchema = new Schema<IUser>({
     required: [true, 'Nome é obrigatório'],
     trim: true,
     maxlength: [100, 'Nome deve ter no máximo 100 caracteres']
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   },
   googleId: {
     type: String,

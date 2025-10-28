@@ -56,6 +56,27 @@ class ApiService {
     );
   }
 
+  // Generic HTTP methods
+  async get(url: string): Promise<any> {
+    const response = await this.api.get(url);
+    return response;
+  }
+
+  async post(url: string, data?: any): Promise<any> {
+    const response = await this.api.post(url, data);
+    return response;
+  }
+
+  async put(url: string, data?: any): Promise<any> {
+    const response = await this.api.put(url, data);
+    return response;
+  }
+
+  async delete(url: string): Promise<any> {
+    const response = await this.api.delete(url);
+    return response;
+  }
+
   // Auth methods
   async login(data: LoginData): Promise<AuthResponse> {
     const response = await this.api.post<AuthResponse>('/auth/login', data);

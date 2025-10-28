@@ -12,6 +12,7 @@ import { Statistics } from './pages/Statistics';
 import { MindMap } from './pages/MindMap';
 import { ImportExportPage } from './pages/ImportExportPage';
 import { Reports } from './pages/Reports';
+import Users from './pages/Users';
 
 // Criar cliente do React Query
 const queryClient = new QueryClient({
@@ -91,6 +92,16 @@ function App() {
                   <ProtectedRoute>
                     <Layout>
                       <Reports />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Users />
                     </Layout>
                   </ProtectedRoute>
                 }

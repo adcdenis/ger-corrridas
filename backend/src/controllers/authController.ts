@@ -39,6 +39,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
+          avatar: user.avatar,
           createdAt: user.createdAt
         },
         token
@@ -137,6 +139,7 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
           avatar: user.avatar,
           createdAt: user.createdAt
         },
@@ -188,6 +191,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
+          avatar: user.avatar,
           createdAt: user.createdAt
         },
         token
@@ -231,6 +236,8 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
+          avatar: user.avatar,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt
         }

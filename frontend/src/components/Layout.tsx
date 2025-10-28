@@ -4,7 +4,7 @@ import {
   LogOut, 
   User, 
   Home, 
-  Calendar, 
+  Activity, 
   BarChart3, 
   Map,
   Menu,
@@ -33,11 +33,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Corridas', href: '/races', icon: Calendar },
+    { name: 'Corridas', href: '/races', icon: Activity },
     { name: 'Estatísticas', href: '/stats', icon: BarChart3 },
     { name: 'Mapa Mental', href: '/mindmap', icon: Map },
     { name: 'Importar/Exportar', href: '/import-export', icon: Download },
     { name: 'Relatórios', href: '/reports', icon: FileText },
+    ...(user?.role === 'admin' ? [{ name: 'Usuários', href: '/users', icon: User }] : []),
   ];
 
   const isActive = (href: string) => {
