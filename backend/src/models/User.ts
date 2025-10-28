@@ -5,6 +5,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   name: string;
+  googleId?: string;
+  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -29,6 +31,15 @@ const userSchema = new Schema<IUser>({
     required: [true, 'Nome é obrigatório'],
     trim: true,
     maxlength: [100, 'Nome deve ter no máximo 100 caracteres']
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // Permite valores null/undefined únicos
+  },
+  avatar: {
+    type: String,
+    default: null
   }
 }, {
   timestamps: true
