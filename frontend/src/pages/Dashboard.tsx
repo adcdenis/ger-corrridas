@@ -10,7 +10,6 @@ import {
   Calendar,
   BarChart3,
   Timer,
-  Medal,
   Target,
   ExternalLink,
   X,
@@ -62,6 +61,152 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, trend, trendUp 
 interface RecentRacesTableProps {
   races: Race[];
 }
+
+interface EnrolledRacesProps {
+  races: Race[];
+}
+
+const EnrolledRacesCard: React.FC<EnrolledRacesProps> = ({ races }) => {
+  // Garantir que races é sempre um array
+  const safeRaces = Array.isArray(races) ? races : [];
+  
+  // Estado para controlar a atualização da contagem regressiva
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Atualizar o tempo a cada segundo
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Função para calcular a contagem regressiva
+  const calculateCountdown = (date: string, time: string) => {
+    const raceDateTime = new Date(`${date}T${time}`);
+    const now = currentTime;
+    const difference = raceDateTime.getTime() - now.getTime();
+
+    if (difference <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
+    }
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    return { days, hours, minutes, seconds, expired: false };
+  };
+
+  // Função para formatar a data
+  const formatDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  // Função para formatar a hora
+  const formatTime = (timeStr: string) => {
+    return timeStr.substring(0, 5); // HH:MM
+  };
+
+  // Filtrar e ordenar corridas inscritas
+  const enrolledRaces = safeRaces
+    .filter(race => race.status === 'inscrito')
+    .sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime())
+    .slice(0, 5);
+
+  if (enrolledRaces.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+            <Timer className="w-5 h-5 mr-2 text-blue-600" />
+            Próximas Corridas Inscritas
+          </h3>
+        </div>
+        <div className="p-6 text-center text-gray-500">
+          <Timer className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <p>Nenhuma corrida inscrita encontrada</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+          <Timer className="w-5 h-5 mr-2 text-blue-600" />
+          Próximas Corridas Inscritas
+        </h3>
+      </div>
+      <div className="divide-y divide-gray-200">
+        {enrolledRaces.map((race) => {
+          const countdown = calculateCountdown(race.date, race.time);
+          return (
+            <div key={race._id} className="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                {/* Informações da corrida */}
+                <div className="flex-1">
+                  <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+                    {race.name}
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs sm:text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-1 text-blue-500" />
+                      {formatDate(race.date)}
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="w-4 h-4 mr-1 text-blue-500" />
+                      {formatTime(race.time)}
+                    </div>
+                    <div className="flex items-center col-span-2 sm:col-span-1">
+                      <MapPin className="w-4 h-4 mr-1 text-blue-500" />
+                      {race.distancia} km
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contagem regressiva */}
+                <div className="flex-shrink-0">
+                  {countdown.expired ? (
+                    <div className="text-center p-3 bg-red-50 rounded-lg border border-red-200">
+                      <p className="text-sm font-medium text-red-600">Corrida iniciada</p>
+                    </div>
+                  ) : (
+                    <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-xs text-blue-600 font-medium mb-1">Faltam:</p>
+                      <div className="grid grid-cols-4 gap-1 text-xs">
+                        <div className="text-center">
+                          <div className="font-bold text-blue-900">{countdown.days}</div>
+                          <div className="text-blue-600">dias</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-blue-900">{countdown.hours.toString().padStart(2, '0')}</div>
+                          <div className="text-blue-600">hrs</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-blue-900">{countdown.minutes.toString().padStart(2, '0')}</div>
+                          <div className="text-blue-600">min</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-blue-900">{countdown.seconds.toString().padStart(2, '0')}</div>
+                          <div className="text-blue-600">seg</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
 
@@ -246,6 +391,7 @@ const RecentRacesTable: React.FC<RecentRacesTableProps> = ({ races }) => {
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [races, setRaces] = useState<Race[]>([]);
+  const [enrolledRaces, setEnrolledRaces] = useState<Race[]>([]);
   const [stats, setStats] = useState<RaceStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -266,11 +412,23 @@ export const Dashboard: React.FC = () => {
           status: ['concluido']
         });
 
+        // Buscar corridas inscritas (próximas 5) ordenadas por data
+        const enrolledRacesResponse = await apiService.getRaces({ 
+          limit: 5, 
+          sortBy: 'date', 
+          sortOrder: 'asc',
+          status: ['inscrito']
+        });
+
         // Buscar estatísticas filtradas por ano
         const statsResponse = await apiService.getRaceStats(selectedYear);
 
         if (racesResponse.success && racesResponse.data) {
           setRaces(racesResponse.data.races);
+        }
+
+        if (enrolledRacesResponse.success && enrolledRacesResponse.data) {
+          setEnrolledRaces(enrolledRacesResponse.data.races);
         }
 
         if (statsResponse.success && statsResponse.data) {
@@ -400,6 +558,16 @@ export const Dashboard: React.FC = () => {
           value={dashboardStats.naoPudeIr.toString()}
           icon={<Clock className="w-5 h-5 sm:w-6 sm:h-6" />}
         />
+      </div>
+
+      {/* Enrolled Races Card */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+            Próximas Corridas Inscritas
+          </h3>
+        </div>
+        <EnrolledRacesCard races={enrolledRaces} />
       </div>
 
       {/* Recent Races Table */}
