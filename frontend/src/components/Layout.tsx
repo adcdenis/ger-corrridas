@@ -87,9 +87,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <div className="bg-gray-50 sticky top-0 z-50">
-        <header className="w-4/5 mx-auto bg-white shadow-sm border-b border-gray-200">
-          <div className="px-4 sm:px-6 lg:px-8">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="w-full lg:w-4/5 mx-auto px-3 sm:px-6 lg:px-8">
+          <div>
           {/* Primeira linha - Menu e User Info */}
           <div className="flex items-center justify-between h-14">
             {/* Desktop Navigation - Esquerda */}
@@ -291,11 +291,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
         )}
-        </header>
-      </div>
+        </div>
+      </header>
 
       {/* Main content */}
-      <main className="w-4/5 mx-auto py-4 sm:py-6 px-3 sm:px-6 lg:px-8 flex-1">
+      <main className="w-full lg:w-4/5 mx-auto py-4 sm:py-6 px-3 sm:px-6 lg:px-8 flex-1">
         <div className="py-4 sm:py-6">
           {children}
         </div>
@@ -303,7 +303,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-auto">
-        <div className="w-4/5 mx-auto py-4 px-3 sm:px-6 lg:px-8">
+        <div className="w-full lg:w-4/5 mx-auto py-4 px-3 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <div className="text-sm text-gray-500">
               {getCopyright()}
