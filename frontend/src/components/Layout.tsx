@@ -7,6 +7,7 @@ import {
   Activity, 
   BarChart3, 
   Map,
+  GitBranch,
   Menu,
   X,
   Download,
@@ -59,7 +60,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Corridas', href: '/races', icon: Activity },
     { name: 'Estatísticas', href: '/stats', icon: BarChart3 },
-    { name: 'Mapa Mental', href: '/mindmap', icon: Map },
+    { name: 'Mapa Mental', href: '/mindmap', icon: GitBranch },
   ];
 
   // Itens do dropdown Opções
@@ -74,7 +75,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Corridas', href: '/races', icon: Activity },
     { name: 'Estatísticas', href: '/stats', icon: BarChart3 },
-    { name: 'Mapa Mental', href: '/mindmap', icon: Map },
+    { name: 'Mapa Mental', href: '/mindmap', icon: GitBranch },
     { name: 'Importar/Exportar', href: '/import-export', icon: Download },
     { name: 'Relatórios', href: '/reports', icon: FileText },
     ...(user?.role === 'admin' ? [{ name: 'Usuários', href: '/users', icon: User }] : []),

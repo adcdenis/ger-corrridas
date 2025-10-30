@@ -273,7 +273,10 @@ export const Reports: React.FC = () => {
     <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Relatórios</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
+          <FileText className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
+          Relatórios
+        </h1>
         <p className="text-gray-600">Gere relatórios detalhados dos seus contadores</p>
       </div>
 

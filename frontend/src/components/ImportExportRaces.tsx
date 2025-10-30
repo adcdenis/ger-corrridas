@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Upload, FileText, AlertCircle } from 'lucide-react';
+import { Download, Upload, FileText, AlertCircle, ArrowUpDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { apiService } from '../services/api';
 
@@ -211,7 +211,8 @@ const ImportExportRaces: React.FC<ImportExportRacesProps> = ({ races, onRacesUpd
     <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
+          <ArrowUpDown className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
           Importar/Exportar Corridas
         </h1>
         <p className="text-gray-600">

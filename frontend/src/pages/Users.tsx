@@ -90,14 +90,12 @@ const Users: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <UsersIcon className="h-6 w-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gerenciar Usuários</h1>
-            <p className="text-gray-600">Visualize e gerencie todos os usuários do sistema</p>
-          </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+            <UsersIcon className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
+            Gerenciar Usuários
+          </h1>
+          <p className="text-gray-600">Visualize e gerencie todos os usuários do sistema</p>
         </div>
         <div className="text-sm text-gray-500">
           Total: {users.length} usuário{users.length !== 1 ? 's' : ''}

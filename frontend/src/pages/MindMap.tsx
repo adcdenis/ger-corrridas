@@ -9,7 +9,8 @@ import {
   Minus,
   Plus,
   Trophy,
-  Target
+  Target,
+  GitBranch
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import type { Race } from '../types/index';
@@ -142,7 +143,10 @@ export const MindMap: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Mapa Mental das Corridas</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center">
+            <GitBranch className="w-6 h-6 sm:w-7 sm:h-7 mr-2 sm:mr-3 text-blue-600" />
+            Mapa Mental das Corridas
+          </h1>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">
             Visualização em árvore organizada por meses do ano {selectedYear}
           </p>

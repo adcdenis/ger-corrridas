@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { type Race, STATUS_LABELS, STATUS_COLORS } from '../types/index';
-import { Pencil, Trash2, Plus, ExternalLink } from 'lucide-react';
+import { Pencil, Trash2, Plus, ExternalLink, Trophy } from 'lucide-react';
 
 const raceSchema = z.object({
     name: z.string().min(1, 'Nome é obrigatório'),
@@ -167,7 +167,10 @@ export const Races: React.FC = () => {
   return (
     <div className="w-full p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gerenciar Corridas</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center">
+          <Trophy className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
+          Gerenciar Corridas
+        </h1>
         <button
           onClick={handleNewRace}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus items-center justify-center gap-2 w-full sm:w-auto"
