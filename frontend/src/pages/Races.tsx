@@ -172,23 +172,27 @@ export const Races: React.FC = () => {
           <span className="truncate">Gerenciar Corridas</span>
         </h1>
         {/* Botão normal apenas em telas maiores */}
-        <button
-          onClick={handleNewRace}
-          className="hidden sm:flex bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 items-center justify-center gap-2 transition-colors flex-shrink-0"
-        >
-          <Plus size={20} />
-          <span>Nova Corrida</span>
-        </button>        
+        {!showForm && (
+          <button
+            onClick={handleNewRace}
+            className="hidden sm:flex bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 items-center justify-center gap-2 transition-colors flex-shrink-0"
+          >
+            <Plus size={20} />
+            <span>Nova Corrida</span>
+          </button>
+        )}        
       </div>
 
       {/* Botão flutuante apenas em dispositivos móveis */}
-      <button
-        onClick={handleNewRace}
-        className="sm:hidden fixed bottom-6 right-6 z-50 bg-blue-600 text-white w-14 h-14 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-        aria-label="Nova Corrida"
-      >
-        <Plus size={24} strokeWidth={2.5} />
-      </button>
+      {!showForm && (
+        <button
+          onClick={handleNewRace}
+          className="sm:hidden fixed bottom-6 right-6 z-50 bg-blue-600 text-white w-14 h-14 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+          aria-label="Nova Corrida"
+        >
+          <Plus size={24} strokeWidth={2.5} />
+        </button>
+      )}
 
       {showForm && (
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
