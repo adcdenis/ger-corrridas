@@ -404,22 +404,21 @@ const Statistics: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
-            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
-            Estatísticas de Corridas
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base">
-            Análise detalhada do seu desempenho e participação em corridas
-            {startDate && endDate && (
-              <span className="block mt-1 text-xs sm:text-sm">
-                Período: {formatDateForDisplay(startDate)} até {formatDateForDisplay(endDate)}
-              </span>
-            )}
-          </p>
-        </div>
+      {/* Header */}
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
+          <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 text-blue-600" />
+          Estatísticas de Corridas
+        </h1>
+        <p className="text-gray-600 text-sm sm:text-base">
+          Análise detalhada do seu desempenho e participação em corridas
+          {startDate && endDate && (
+            <span className="block mt-1 text-xs sm:text-sm">
+              Período: {formatDateForDisplay(startDate)} até {formatDateForDisplay(endDate)}
+            </span>
+          )}
+        </p>
+      </div>
 
         {/* Filtros de Data */}
         <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
@@ -548,7 +547,6 @@ const Statistics: React.FC = () => {
             </p>
           </div>
         )}
-      </div>
     </div>
   );
 };

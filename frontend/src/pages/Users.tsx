@@ -23,7 +23,7 @@ const Users: React.FC = () => {
   // Verificar se o usuário é admin
   if (user?.role !== 'admin') {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center">
             <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
@@ -77,7 +77,7 @@ const Users: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto">
+      <div>
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           <span className="ml-2 text-gray-600">Carregando usuários...</span>
@@ -87,7 +87,7 @@ const Users: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">

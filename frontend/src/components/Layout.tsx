@@ -10,10 +10,12 @@ import {
   Menu,
   X,
   Download,
-  FileText
+  FileText,
+  ChevronDown,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getCopyright, getVersionInfo } from '../utils/version';
 
 interface LayoutProps {
@@ -25,13 +27,50 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const navigation = [
+  // Fechar dropdown quando clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOptionsOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Itens principais do menu horizontal
+  const mainNavigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Corridas', href: '/races', icon: Activity },
+    { name: 'Estatísticas', href: '/stats', icon: BarChart3 },
+    { name: 'Mapa Mental', href: '/mindmap', icon: Map },
+  ];
+
+  // Itens do dropdown Opções
+  const optionsNavigation = [
+    { name: 'Importar/Exportar', href: '/import-export', icon: Download },
+    { name: 'Relatórios', href: '/reports', icon: FileText },
+    ...(user?.role === 'admin' ? [{ name: 'Usuários', href: '/users', icon: User }] : []),
+  ];
+
+  // Todos os itens para mobile (mantém a lista completa)
+  const allNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Corridas', href: '/races', icon: Activity },
     { name: 'Estatísticas', href: '/stats', icon: BarChart3 },
@@ -48,13 +87,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-gray-50 sticky top-0 z-50">
+        <header className="w-4/5 mx-auto bg-white shadow-sm border-b border-gray-200">
+          <div className="px-4 sm:px-6 lg:px-8">
           {/* Primeira linha - Menu e User Info */}
           <div className="flex items-center justify-between h-14">
             {/* Desktop Navigation - Esquerda */}
             <nav className="hidden lg:flex items-center space-x-8">
-              {navigation.map((item) => {
+              {/* Itens principais */}
+              {mainNavigation.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
@@ -71,6 +112,48 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Link>
                 );
               })}
+
+              {/* Dropdown Opções */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsOptionsOpen(!isOptionsOpen)}
+                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors ${
+                    optionsNavigation.some(item => isActive(item.href))
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Opções
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {isOptionsOpen && (
+                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-1">
+                      {optionsNavigation.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            onClick={() => setIsOptionsOpen(false)}
+                            className={`flex items-center px-4 py-2 text-sm transition-colors ${
+                              isActive(item.href)
+                                ? 'text-blue-600 bg-blue-50'
+                                : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            <Icon className="h-4 w-4 mr-3" />
+                            {item.name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </nav>
 
             {/* Spacer para mobile */}
@@ -78,36 +161,56 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* User menu - Direita */}
             <div className="flex items-center space-x-3 flex-shrink-0">
-              <div className="hidden md:flex items-center space-x-2 text-sm text-gray-700">
-                {/* Avatar ou Iniciais */}
-                {user?.avatar ? (
-                  <img
-                    className="h-8 w-8 rounded-full object-cover border border-gray-200"
-                    src={user.avatar}
-                    alt={user.name}
-                  />
-                ) : (
-                  <>
-                    <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
-                      {user?.name
-                        ?.split(' ')
-                        .map(n => n[0])
-                        .join('')
-                        .toUpperCase()
-                        .slice(0, 2) || '?'}
+              {/* Avatar Dropdown */}
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="hidden md:flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-md p-1 transition-colors"
+                >
+                  {/* Avatar ou Iniciais */}
+                  {user?.avatar ? (
+                    <img
+                      className="h-8 w-8 rounded-full object-cover border border-gray-200"
+                      src={user.avatar}
+                      alt={user.name}
+                    />
+                  ) : (
+                    <>
+                      <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+                        {user?.name
+                          ?.split(' ')
+                          .map(n => n[0])
+                          .join('')
+                          .toUpperCase()
+                          .slice(0, 2) || '?'}
+                      </div>
+                      <span className="truncate max-w-32">{user?.name}</span>
+                    </>
+                  )}
+                </button>
+
+                {/* User Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-1">
+                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                        <div className="font-medium">{user?.name}</div>
+                        <div className="text-gray-500">{user?.email}</div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                      >
+                        <LogOut className="h-4 w-4 mr-3" />
+                        Sair
+                      </button>
                     </div>
-                    <span className="truncate max-w-32">{user?.name}</span>
-                  </>
+                  </div>
                 )}
               </div>
-              
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Sair</span>
-              </button>
 
               {/* Mobile menu button */}
               <button
@@ -155,7 +258,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </div>
               
               {/* Navigation items */}
-              {navigation.map((item) => {
+              {allNavigation.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
@@ -173,13 +276,26 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Link>
                 );
               })}
+
+              {/* Botão Sair no mobile */}
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center w-full px-4 py-3 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-200"
+              >
+                <LogOut className="h-5 w-5 mr-3 flex-shrink-0" />
+                <span>Sair</span>
+              </button>
             </div>
           </div>
         )}
-      </header>
+        </header>
+      </div>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto py-4 sm:py-6 px-3 sm:px-6 lg:px-8 flex-1">
+      <main className="w-4/5 mx-auto py-4 sm:py-6 px-3 sm:px-6 lg:px-8 flex-1">
         <div className="py-4 sm:py-6">
           {children}
         </div>
@@ -187,7 +303,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-auto">
-        <div className="max-w-7xl mx-auto py-4 px-3 sm:px-6 lg:px-8">
+        <div className="w-4/5 mx-auto py-4 px-3 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <div className="text-sm text-gray-500">
               {getCopyright()}
