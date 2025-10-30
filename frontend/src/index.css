@@ -12,6 +12,15 @@ body {
   box-sizing: border-box;
 }
 
+/* Hide scrollbar for navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
 /* Badge styles for race status */
 .badge-inscrito {
   @apply bg-green-100 text-green-800;
