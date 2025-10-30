@@ -79,8 +79,26 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             {/* User menu - Direita */}
             <div className="flex items-center space-x-3 flex-shrink-0">
               <div className="hidden md:flex items-center space-x-2 text-sm text-gray-700">
-                <User className="h-4 w-4" />
-                <span className="truncate max-w-32">{user?.name}</span>
+                {/* Avatar ou Iniciais */}
+                {user?.avatar ? (
+                  <img
+                    className="h-8 w-8 rounded-full object-cover border border-gray-200"
+                    src={user.avatar}
+                    alt={user.name}
+                  />
+                ) : (
+                  <>
+                    <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+                      {user?.name
+                        ?.split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2) || '?'}
+                    </div>
+                    <span className="truncate max-w-32">{user?.name}</span>
+                  </>
+                )}
               </div>
               
               <button
@@ -113,8 +131,26 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               {/* User info no mobile */}
               <div className="px-4 py-3 border-b border-gray-200">
                 <div className="flex items-center">
-                  <User className="h-5 w-5 text-gray-400 mr-3 flex-shrink-0" />
-                  <span className="text-base font-medium text-gray-800 truncate">{user?.name}</span>
+                  {/* Avatar ou Iniciais */}
+                  {user?.avatar ? (
+                    <img
+                      className="h-10 w-10 rounded-full object-cover border border-gray-200"
+                      src={user.avatar}
+                      alt={user.name}
+                    />
+                  ) : (
+                    <>
+                      <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium mr-3 flex-shrink-0">
+                        {user?.name
+                          ?.split(' ')
+                          .map(n => n[0])
+                          .join('')
+                          .toUpperCase()
+                          .slice(0, 2) || '?'}
+                      </div>
+                      <span className="text-base font-medium text-gray-800 truncate">{user?.name}</span>
+                    </>
+                  )}
                 </div>
               </div>
               
