@@ -257,7 +257,7 @@ const EnrolledRacesCard: React.FC<EnrolledRacesProps> = ({ races }) => {
           const countdown = calculateCountdown(race.date, race.time);
           return (
             <div key={race._id} className="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+              <div className="flex items-center justify-between gap-3 flex-nowrap">
                 {/* Informações da corrida */}
                 <div className="flex-1">
                   <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
@@ -311,7 +311,7 @@ const EnrolledRacesCard: React.FC<EnrolledRacesProps> = ({ races }) => {
                 </div>
 
                 {/* Botão de compartilhar */}
-                <div className="flex-shrink-0 mt-2 sm:mt-0 sm:ml-4">
+                <div className="flex-shrink-0">
                   <button
                     onClick={() => handleShare(race)}
                     className="inline-flex items-center bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
