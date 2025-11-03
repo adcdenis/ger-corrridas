@@ -151,9 +151,30 @@ const EnrolledRacesCard: React.FC<EnrolledRacesProps> = ({ races }) => {
   const buildShareMessage = (race: Race) => {
     const detailed = calculateDetailedCountdown(race.date, race.time);
 
-    const countdownText = detailed.expired
-      ? 'A corrida já começou.'
-      : `Faltam: ${detailed.years} anos, ${detailed.months} meses, ${detailed.days} dias, ${pad2(detailed.hours)} horas, ${pad2(detailed.minutes)} minutos e ${pad2(detailed.seconds)} segundos.`;
+    let countdownText: string;
+    if (detailed.expired) {
+      countdownText = 'A corrida já começou.';
+    } else {
+      const units = [
+        { value: detailed.years, singular: 'ano', plural: 'anos' },
+        { value: detailed.months, singular: 'mês', plural: 'meses' },
+        { value: detailed.days, singular: 'dia', plural: 'dias' },
+        { value: detailed.hours, singular: 'hora', plural: 'horas' },
+        { value: detailed.minutes, singular: 'minuto', plural: 'minutos' },
+        { value: detailed.seconds, singular: 'segundo', plural: 'segundos' },
+      ];
+
+      const parts = units
+        .filter(u => u.value > 0)
+        .map(u => `${u.value} ${u.value === 1 ? u.singular : u.plural}`);
+
+      let list = parts.join(', ');
+      if (parts.length > 1) {
+        list = `${parts.slice(0, -1).join(', ')} e ${parts[parts.length - 1]}`;
+      }
+
+      countdownText = `Faltam: ${list || 'menos de 1 segundo.'}`;
+    }
 
     const dateText = `${formatDate(race.date)} às ${formatTime(race.time)}`;
 
