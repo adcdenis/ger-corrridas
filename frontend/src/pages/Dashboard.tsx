@@ -13,7 +13,8 @@ import {
   Target,
   ExternalLink,
   X,
-  Plus
+  Plus,
+  Share2
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import type { Race, RaceStats } from '../types/index';
@@ -98,6 +99,94 @@ const EnrolledRacesCard: React.FC<EnrolledRacesProps> = ({ races }) => {
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
     return { days, hours, minutes, seconds, expired: false };
+  };
+
+  // Contagem regressiva detalhada (aproximação para meses/anos)
+  const calculateDetailedCountdown = (date: string, time: string) => {
+    const raceDateTime = new Date(`${date}T${time}`);
+    const now = currentTime;
+    let diff = raceDateTime.getTime() - now.getTime();
+
+    if (diff <= 0) {
+      return {
+        years: 0,
+        months: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        expired: true,
+      };
+    }
+
+    const msInSecond = 1000;
+    const msInMinute = msInSecond * 60;
+    const msInHour = msInMinute * 60;
+    const msInDay = msInHour * 24;
+    const msInMonthApprox = msInDay * 30; // aproximação
+    const msInYearApprox = msInDay * 365; // aproximação
+
+    const years = Math.floor(diff / msInYearApprox);
+    diff = diff % msInYearApprox;
+
+    const months = Math.floor(diff / msInMonthApprox);
+    diff = diff % msInMonthApprox;
+
+    const days = Math.floor(diff / msInDay);
+    diff = diff % msInDay;
+
+    const hours = Math.floor(diff / msInHour);
+    diff = diff % msInHour;
+
+    const minutes = Math.floor(diff / msInMinute);
+    diff = diff % msInMinute;
+
+    const seconds = Math.floor(diff / msInSecond);
+
+    return { years, months, days, hours, minutes, seconds, expired: false };
+  };
+
+  const pad2 = (n: number) => n.toString().padStart(2, '0');
+
+  const buildShareMessage = (race: Race) => {
+    const detailed = calculateDetailedCountdown(race.date, race.time);
+
+    const countdownText = detailed.expired
+      ? 'A corrida já começou.'
+      : `Faltam: ${detailed.years} anos, ${detailed.months} meses, ${detailed.days} dias, ${pad2(detailed.hours)} horas, ${pad2(detailed.minutes)} minutos e ${pad2(detailed.seconds)} segundos.`;
+
+    const dateText = `${formatDate(race.date)} às ${formatTime(race.time)}`;
+
+    return (
+      `Corrida: ${race.name}\n` +
+      `Data/Hora: ${dateText}\n` +
+      `Distância: ${race.distancia} km\n` +
+      `${countdownText}`
+    );
+  };
+
+  const handleShare = async (race: Race) => {
+    const message = buildShareMessage(race);
+    const title = `Corrida: ${race.name}`;
+
+    // Web Share API (mobile/modern browsers)
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: message });
+        return;
+      } catch (err) {
+        // Fallthrough to WhatsApp
+      }
+    }
+
+    // Fallback: WhatsApp
+    const whatsUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    const newWin = window.open(whatsUrl, '_blank');
+    if (!newWin) {
+      // Fallback adicional: e-mail
+      const mailtoUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(message)}`;
+      window.location.href = mailtoUrl;
+    }
   };
 
   // Função para formatar a data
@@ -198,6 +287,17 @@ const EnrolledRacesCard: React.FC<EnrolledRacesProps> = ({ races }) => {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Botão de compartilhar */}
+                <div className="flex-shrink-0 mt-2 sm:mt-0 sm:ml-4">
+                  <button
+                    onClick={() => handleShare(race)}
+                    className="inline-flex items-center bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+                    aria-label="Compartilhar informações da corrida"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
